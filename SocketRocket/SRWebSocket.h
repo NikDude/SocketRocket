@@ -66,6 +66,7 @@ extern NSString *const SRHTTPResponseErrorKey;
 // Some helper constructors.
 - (id)initWithURL:(NSURL *)url protocols:(NSArray *)protocols;
 - (id)initWithURL:(NSURL *)url;
+- (id)initWithURL:(NSURL *)url configureForVOIP:(BOOL)configureForVOIP;
 
 // Delegate queue will be dispatch_main_queue by default.
 // You cannot set both OperationQueue and dispatch_queue.

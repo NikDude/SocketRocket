@@ -178,6 +178,7 @@ typedef void (^data_callback)(SRWebSocket *webSocket,  NSData *data);
 
 @interface SRWebSocket ()  <NSStreamDelegate>
 
+
 - (void)_writeData:(NSData *)data;
 - (void)_closeWithProtocolError:(NSString *)message;
 - (void)_failWithError:(NSError *)error;
@@ -307,6 +308,17 @@ static __strong NSData *CRLFCRLF;
 - (id)initWithURL:(NSURL *)url;
 {
     return [self initWithURL:url protocols:nil];
+}
+
+- (id)initWithURL:(NSURL *)url configureForVOIP:(BOOL)configureForVOIP {
+    self = [self initWithURL:url];
+    if (self) {
+        if (configureForVOIP) {
+            CFReadStreamSetProperty((__bridge  CFReadStreamRef)_inputStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
+            CFWriteStreamSetProperty((__bridge  CFWriteStreamRef)_outputStream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
+        }
+    }
+    return self;
 }
 
 - (id)initWithURL:(NSURL *)url protocols:(NSArray *)protocols;
@@ -583,6 +595,7 @@ static __strong NSData *CRLFCRLF;
         [_outputStream setProperty:SSLOptions
                             forKey:(__bridge id)kCFStreamPropertySSLSettings];
     }
+    
     
     _inputStream.delegate = self;
     _outputStream.delegate = self;
